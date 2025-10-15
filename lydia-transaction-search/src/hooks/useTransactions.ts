@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Transaction, TransactionCollection } from '../models/transaction';
+import { LOADING_DELAY, ERROR_MESSAGES } from '../config/constants';
 import transactionsData from '../assets/transactions.json';
 export const useTransactions = () => {
   const [transactions, setTransactions] = useState<TransactionCollection>([]);
@@ -10,14 +11,13 @@ export const useTransactions = () => {
     const loadTransactions = async () => {
       try {
         setLoading(true);
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, LOADING_DELAY));
         
         const data = transactionsData as Transaction[];
         setTransactions(data);
         setError(null);
-      } catch (err) {
-        setError('Error loading transactions');
-        console.error('Error loading transactions:', err);
+      } catch {
+        setError(ERROR_MESSAGES.LOADING_FAILED);
       } finally {
         setLoading(false);
       }

@@ -12,7 +12,7 @@ export const Footer = () => {
             className="h-6 w-auto transition-all duration-300 dark:brightness-0 dark:invert"
           />
           <p className="text-sm text-gray-600 dark:text-gray-400">
-            © 2025 Lydia Solutions. Tous droits réservés.
+            © 2025 Lydia Solutions. All rights reserved.
           </p>
         </div>
 

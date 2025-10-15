@@ -23,6 +23,7 @@ export const SearchBar = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-label="Search by value"
         className="
           block w-full pl-10 pr-10 py-3
           bg-transparent

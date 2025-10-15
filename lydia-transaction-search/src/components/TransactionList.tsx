@@ -1,6 +1,10 @@
-import { RotateCcw } from 'lucide-react';
+import { RotateCcw, Loader2, ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Transaction } from '../models/transaction';
 import { TransactionCard } from './TransactionCard';
+import { TransactionSkeletonGroup } from './TransactionSkeleton';
+import { ErrorCatcher } from './ErrorCatcher';
+import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { groupTransactionsByWeek } from '../utils/transactionUtils';
 
 interface TransactionListProps {
@@ -16,46 +20,96 @@ export const TransactionList = ({
   loading, 
   error
 }: TransactionListProps) => {
+  const { visibleItems, hasMore, isLoading } = useInfiniteScroll(filteredTransactions, 10);
   
   if (loading) {
-    return ( // lazy loading avc fausses cards ici, ne pas oublier
-      <div className="text-center py-8 text-gray-600 dark:text-gray-400">
-        Transactions are loading...
-      </div>
+    return (
+      <motion.div 
+        className="max-w-4xl mx-auto space-y-8" 
+        aria-label="Loading transactions" 
+        role="status"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        {Array.from({ length: 2 }).map((_, i) => (
+          <motion.div
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, delay: i * 0.1 }}
+          >
+            <TransactionSkeletonGroup />
+          </motion.div>
+        ))}
+      </motion.div>
     );
   }
   
   if (error) {
     return (
-      <div className="text-center py-8 text-red-500">
+      <div className="text-center py-8 text-red-500" role="alert" aria-live="assertive">
         Error: {error}
       </div>
     );
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4" aria-live="polite" aria-label="Transaction results">
 
-      {filteredTransactions.length > 0 ? (
+      {visibleItems.length > 0 ? (
         <div className="max-w-4xl mx-auto space-y-8">
-          {groupTransactionsByWeek(filteredTransactions).map(({ weekKey, label, transactions }) => (
-            <div key={weekKey} className="space-y-4">
+          {groupTransactionsByWeek(visibleItems).map(({ weekKey, label, transactions }, groupIndex) => (
+            <motion.div 
+              key={weekKey} 
+              className="space-y-4"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: groupIndex * 0.1 }}
+            >
               <h2 className="text-lg font-semibold text-gray-500 dark:text-white dark:border-gray-700 pb-2">
                 {label}
               </h2>
               <div className="grid gap-3">
-                {transactions.map(transaction => (
-                  <TransactionCard 
-                    key={transaction.paymentId} 
-                    transaction={transaction} 
-                  />
+                {transactions.map((transaction, transactionIndex) => (
+                  <motion.div
+                    key={transaction.paymentId}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.3, delay: (groupIndex * 0.1) + (transactionIndex * 0.05) }}
+                  >
+                    <ErrorCatcher>
+                      <TransactionCard 
+                        transaction={transaction} 
+                      />
+                    </ErrorCatcher>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           ))}
+          
+          {(hasMore || isLoading) && (
+            <motion.div 
+              className="text-center py-6 text-gray-500 dark:text-gray-400"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="animate-spin h-5 w-5 mx-auto mb-2" />
+                </>
+              ) : (
+                <div className="flex flex-col items-center gap-2">
+                  <ChevronDown className="h-5 w-5 animate-bounce" />
+                </div>
+              )}
+            </motion.div>
+          )}
         </div>
       ) : searchQuery ? (
-        <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+        <div className="text-center py-8 text-gray-500 dark:text-gray-400" role="status">
           <p>We couldn't find any transactions matching your search.
              Please modify your search or filters to get results.</p>
             <div className="flex justify-center">

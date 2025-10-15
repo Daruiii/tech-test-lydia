@@ -31,8 +31,17 @@ const getStatusTitle = (status: string) => {
 };
 
 export const TransactionCard = ({ transaction }: TransactionCardProps) => {
+  // TEST ERROR CATCHER (juste pour l'afficher)
+  if (transaction.paymentId === '9e6a7a67-6ad3-4b50-9381-65145f9d89f5') {
+    throw new Error('Test error for ErrorCatcher');
+  }
+  
   return (
-    <div className="p-6 shadow-sm border-b border-white hover:border-primary-500 transition duration-500">
+    <div 
+      className="p-6 shadow-sm border-b border-white hover:border-primary-500 transition duration-500"
+      role="article"
+      aria-label={`Transaction: ${transaction.label}`}
+    >
       <div className="flex justify-between items-start mb-4">
       <div className="flex items-start gap-3 flex-1">
         <div className="w-2 h-2 bg-gray-300 dark:bg-gray-600 rounded-full mt-3 flex-shrink-0"></div>
@@ -54,10 +63,14 @@ export const TransactionCard = ({ transaction }: TransactionCardProps) => {
       </div>
       
       <div className="text-right ml-6">
-      <p className="font-bold text-xl text-gray-900 dark:text-white mb-2">
+      <p className="font-bold text-xl text-gray-900 dark:text-white mb-2 whitespace-nowrap">
       {transaction.amount}
       </p>
-      <div className="flex items-center justify-end" title={getStatusTitle(transaction.status)}>
+      <div 
+        className="flex items-center justify-end" 
+        title={getStatusTitle(transaction.status)}
+        aria-label={`Status: ${getStatusTitle(transaction.status)}`}
+      >
         {getStatusIcon(transaction.status)}
       </div>
       </div>
