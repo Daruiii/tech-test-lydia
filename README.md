@@ -14,6 +14,7 @@ L’objectif de ce projet est de proposer une interface fluide, claire et réact
 - **Gestion des erreurs** via un composant personnalisé
 - **Accessibilité renforcée** (labels ARIA, gestion des états de chargement)
 - **Interface responsive** inspirée de la charte graphique de Lydia
+- **Modal d’information** pour les détails de chaque transaction
 
 ## Stack technique
 
