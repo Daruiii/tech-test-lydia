@@ -25,7 +25,7 @@ export const TransactionList = ({
   if (loading) {
     return (
       <motion.div 
-        className="max-w-4xl mx-auto px-4 space-y-8"
+        className="max-w-4xl mx-auto px-4 space-y-8 overflow-x-hidden"
         aria-label="Loading transactions" 
         role="status"
         initial={{ opacity: 0 }}
