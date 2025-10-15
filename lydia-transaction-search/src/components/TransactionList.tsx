@@ -25,7 +25,7 @@ export const TransactionList = ({
   if (loading) {
     return (
       <motion.div 
-        className="max-w-4xl mx-auto space-y-8" 
+        className="max-w-4xl mx-auto px-4 space-y-8"
         aria-label="Loading transactions" 
         role="status"
         initial={{ opacity: 0 }}
@@ -58,7 +58,7 @@ export const TransactionList = ({
     <div className="space-y-4" aria-live="polite" aria-label="Transaction results">
 
       {visibleItems.length > 0 ? (
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-4xl mx-auto px-4 space-y-8">
           {groupTransactionsByWeek(visibleItems).map(({ weekKey, label, transactions }, groupIndex) => (
             <motion.div 
               key={weekKey} 
