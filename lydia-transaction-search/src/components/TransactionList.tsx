@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { RotateCcw, Loader2, ChevronDown } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Transaction } from '../models/transaction';
 import { TransactionCard } from './TransactionCard';
 import { TransactionSkeletonGroup } from './TransactionSkeleton';
 import { ErrorCatcher } from './ErrorCatcher';
+import { Modal } from './Modal';
+import { TransactionDetails } from './TransactionDetails';
 import { useInfiniteScroll } from '../hooks/useInfiniteScroll';
 import { groupTransactionsByWeek } from '../utils/transactionUtils';
 
@@ -20,7 +23,8 @@ export const TransactionList = ({
   loading, 
   error
 }: TransactionListProps) => {
-  const { visibleItems, hasMore, isLoading } = useInfiniteScroll(filteredTransactions, 10);
+  const { visibleItems, hasMore, isLoading } = useInfiniteScroll(filteredTransactions, 3);
+  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
   
   if (loading) {
     return (
@@ -80,7 +84,8 @@ export const TransactionList = ({
                   >
                     <ErrorCatcher>
                       <TransactionCard 
-                        transaction={transaction} 
+                        transaction={transaction}
+                        onClick={setSelectedTransaction}
                       />
                     </ErrorCatcher>
                   </motion.div>
@@ -122,6 +127,16 @@ export const TransactionList = ({
             </div>
         </div>
       ) : null}
+      
+      <Modal
+        isOpen={selectedTransaction !== null}
+        onClose={() => setSelectedTransaction(null)}
+        title="Transaction Details"
+      >
+        {selectedTransaction && (
+          <TransactionDetails transaction={selectedTransaction} />
+        )}
+      </Modal>
     </div>
   );
 };

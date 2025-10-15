@@ -4,6 +4,7 @@ import { formatTransactionDate } from "../utils/dateUtils";
 
 interface TransactionCardProps {
   transaction: Transaction;
+  onClick?: (transaction: Transaction) => void;
 }
 
 const getStatusIcon = (status: string) => {
@@ -48,7 +49,7 @@ const getStatusTitle = (status: string) => {
   }
 };
 
-export const TransactionCard = ({ transaction }: TransactionCardProps) => {
+export const TransactionCard = ({ transaction, onClick }: TransactionCardProps) => {
   // TEST ERROR CATCHER (juste pour l'afficher)
   if (transaction.paymentId === "9e6a7a67-6ad3-4b50-9381-65145f9d89f5") {
     throw new Error("Test error for ErrorCatcher");
@@ -56,9 +57,10 @@ export const TransactionCard = ({ transaction }: TransactionCardProps) => {
 
   return (
     <div
-      className="p-6 shadow-sm border-b border-white hover:border-primary-500 transition duration-500"
+      className="p-6 shadow-sm border-b border-white hover:border-primary-500 transition duration-500 cursor-pointer"
       role="article"
       aria-label={`Transaction: ${transaction.label}`}
+      onClick={() => onClick?.(transaction)}
     >
       <div className="flex justify-between items-start mb-4">
         <div className="flex items-start gap-3 flex-1 w-full">
